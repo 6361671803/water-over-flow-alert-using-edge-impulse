@@ -10,7 +10,6 @@ When the water reaches the FULL level (detected using ML), a **buzzer turns ON**
 
 This README represents the **final Overflow Detection System**, based entirely on **your dataset**.
 
----
 
 # 🚀 Project Summary
 
@@ -26,33 +25,6 @@ Entire system works **offline**, no WiFi needed.
 ---
 
 # 📂 Repository Structure
-
-```
-
-WaterOverflowAI/
-│
-├── README.md
-├── HW_NOTES.md
-├── .gitignore
-│
-├── code/
-│   └── water_overflow_alert_nano33ble.ino
-│
-├── model/
-│   └── edge_impulse_nano33ble_library.zip
-│
-├── dataset/
-│   ├── full/*.csv
-│   └── not_full/*.csv
-│
-└── images/
-├── wiring_nano33ble.png
-├── hardware_setup.png
-├── sensor_placement.png
-└── system_block_diagram.png
-
-```
-
 ---
 
 # 🧪 Dataset Explanation (VERY IMPORTANT)
