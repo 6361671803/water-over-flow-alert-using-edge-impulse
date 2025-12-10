@@ -1,18 +1,20 @@
 # Ignore build and temporary files
 build/
-*.sav
-*.bak
-*.log
-*.tmp
-
-# Ignore Arduino backup files
-*.ino.save
-*.ino.eep
+*.o
+*.elf
 *.hex
+*.bin
 
-# Ignore OS / IDE junk
+
+# Arduino backup
+*.ino.save
+
+
+# OS / IDE
 .vscode/
-.idea/
 .DS_Store
 Thumbs.db
 
+
+# Edge Impulse zip caches (optionally)
+edge_impulse_*.zip
