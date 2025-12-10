@@ -1,5 +1,5 @@
 
-# 🧠 Edge Impulse — Build & Deploy (Arduino UNO / AVR)
+# 🧠 Edge Impulse — Build & Deploy (Arduino UNO r3 / AVR)
 
 1. Open your Edge Impulse project and make sure the impulse uses the same sampling interval and frame length you collected.  
 2. Go to **Deployment → Arduino Library**.  
@@ -94,13 +94,4 @@ Before running:
 
 ---
 
-# 📦 Want me to generate files?
-If you want, I can now generate for you immediately:
-
-- `wiring_uno.png` (clean labeled wiring diagram PNG)  
-- `sensor_placement.png` (visual showing 3–6 cm vs 8–12 cm)  
-- `system_block_diagram.png`  
-- A ZIP of the text files for direct upload
-
-Reply with any of: **“Make wiring_uno.png”**, **“Make all images”**, or **“Make repo ZIP”** and I’ll produce them now.
 
