@@ -4,6 +4,7 @@ build/
 *.elf
 *.hex
 *.bin
+*.log
 
 # Arduino backup
 *.ino.save
