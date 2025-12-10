@@ -1,231 +1,106 @@
 
-# 📘 **README.md — Water Overflow Alert System (Arduino Nano 33 BLE Rev2 + Edge Impulse)**
+# 🧠 Edge Impulse — Build & Deploy (Arduino UNO / AVR)
 
-```markdown
-# 💧 Water Overflow Alert System  
-**Arduino Nano 33 BLE Rev2 + HC-SR04 Ultrasonic Sensor + Edge Impulse (TinyML)**
-
-This project detects **when a glass or small tank is FULL** using an ultrasonic distance sensor (HC-SR04) and a TinyML model trained in **Edge Impulse**.  
-When the water reaches the FULL level (detected using ML), a **buzzer turns ON**.
-
-This README represents the **final Overflow Detection System**, based entirely on **your dataset**.
-
-
-# 🚀 Project Summary
-
-- Ultrasonic sensor continuously measures distance to water surface.
-- Distances are fed into a TinyML model running **on-device** on the Arduino Nano 33 BLE Rev2.
-- The model classifies:
-  - **glass_full** → Water level HIGH (3–6 cm)
-  - **glass_not_full** → Water level LOW (8–12 cm)
-- Buzzer turns ON only when **glass_full** is predicted.
-
-Entire system works **offline**, no WiFi needed.
+1. Open your Edge Impulse project and make sure the impulse uses the same sampling interval and frame length you collected.  
+2. Go to **Deployment → Arduino Library**.  
+3. Under Target, choose **Arduino (AVR)** or **Arduino UNO** (if shown).  
+4. Choose **Quantized (int8)** (recommended) and click **Build**.  
+5. Download the generated ZIP and save it as:  
+   `/model/edge_impulse_uno_library.zip` (do **not** unzip in the repo).  
+6. In Arduino IDE: `Sketch → Include Library → Add .ZIP Library` → choose the downloaded ZIP.  
+7. Open the ZIP locally and note the `.h` header filename (e.g. `water_overflow_alert_inferencing.h`). **Replace** the placeholder include line in your sketch with that exact filename.
 
 ---
 
-# 📂 Repository Structure
----
+# ▶ How to compile & upload
 
-# 🧪 Dataset Explanation (VERY IMPORTANT)
-
-Your dataset contains distance readings from HC-SR04:
-
-| Condition | Distance | Label |
-|----------|----------|--------|
-| **FULL** | **3–6 cm** | `glass_full` |
-| **NOT FULL** | **8–12 cm** | `glass_not_full` |
-
-This makes the model extremely accurate because the distances **do not overlap**.
-
-➡️ Dataset is perfectly suited for **Overflow Detection**, not underflow.
+1. Install Arduino IDE and select **Arduino/Genuino Uno** under Tools → Board.  
+2. `Sketch → Include Library → Add .ZIP Library` → select `/model/edge_impulse_uno_library.zip`.  
+3. Open `code/water_overflow_alert_uno.ino` and replace the `#include <your_project_inferencing.h>` line with the header from the ZIP.  
+4. Connect UNO via USB, select correct COM port.  
+5. Click Upload.  
+6. Open Serial Monitor at **115200** to observe samples and inference output.
 
 ---
 
-# 🎯 Working Principle
-
-1. HC-SR04 measures water distance.
-2. The Arduino collects multiple distance samples.
-3. These samples go into the **Edge Impulse ML model**.
-4. If model output = **glass_full**, the buzzer turns ON.
-5. Otherwise, buzzer stays OFF.
+# ✅ Default thresholds & behavior
+- **FULL_THRESHOLD** = 0.80 (80% confidence) — you can tune this in the sketch.  
+- Buzzer ON when `glass_full` > threshold.  
+- Buzzer OFF otherwise.
 
 ---
 
-# 🧱 Hardware Setup
-
-### Components
-- Arduino Nano 33 BLE Rev2 (3.3V logic)
-- HC-SR04 ultrasonic sensor
-- Active buzzer (5V or 3.3V)
-- NPN transistor (for 5V buzzer)
-- Voltage divider (10kΩ + 4.7kΩ)
-- Breadboard + jumper wires
-- Water glass/cup
-
----
-
-# 🔌 Wiring Diagram (Nano 33 BLE Rev2)
-
-### Ultrasonic Sensor
-| HC-SR04 Pin | Arduino Pin |
-|-------------|-------------|
-| VCC | 5V |
-| GND | GND |
-| TRIG | D9 |
-| ECHO | **D10 (through voltage divider)** |
-
-### Voltage Divider (protects 3.3V Arduino)
-```
-
-ECHO(5V) --- 10kΩ ---●--- 4.7kΩ --- GND
-|
-D10
-
-```
-
-### Buzzer (5V type with transistor)
-```
-
-D8 → 1kΩ → Base of NPN
-Emitter → GND
-Collector → Buzzer –
-Buzzer + → 5V
-
-````
-
-Images for GitHub:
-- wiring diagram → `/images/wiring_nano33ble.png`
-- setup photo → `/images/hardware_setup.png`
-
----
-
-# 📐 Sensor Placement
-
-- HC-SR04 is fixed above the glass, pointing downward.
-- When water rises, distance decreases.
-- Dataset defines:
-  - **3–6 cm = FULL**
-  - **8–12 cm = NOT FULL**
-
-See `/images/sensor_placement.png`.
-
----
-
-# 🧠 Machine Learning Model (Edge Impulse)
-
-### Impulse Design Used
-- **Input**: Ultrasonic distance readings  
-- **DSP block**: Raw data (no filters)  
-- **Classifier**: Dense Neural Network (quantized int8)  
-- **Labels**: `glass_full`, `glass_not_full`
-
-### Deployment
-1. Edge Impulse → **Deployment**  
-2. Select **Arduino Library**  
-3. Build → download ZIP  
-4. Add ZIP to Arduino IDE  
-5. Include header:  
-   ```cpp
-   #include <your_project_inferencing.h>
-````
-
----
-
-# 🎵 Buzzer Logic
-
-```text
-IF prediction = glass_full AND confidence > 0.8
-    buzzer = ON
-ELSE
-    buzzer = OFF
-```
-
----
-
-# 🌍 Real-World Applications
-
-### ✔ Household water overflow alert
-
-Stops water wastage by alerting when overhead tanks are full.
-
-### ✔ Automated filling systems
-
-Useful for beverage machines, laboratory liquids, etc.
-
-### ✔ Smart home appliances
-
-Prevents boiling water or milk overflowing.
-
-### ✔ Industrial container monitoring
-
-Detects liquid levels with a non-contact sensor.
-
-### ✔ Education & TinyML demonstration
-
-Shows how AI can run on microcontrollers for real-world sensing.
+# 📷 Images to include in repo
+Place these files in `/images/`:
+- `wiring_uno.png` — wiring diagram (D9 TRIG, D10 ECHO, D8 buzzer/transistor)  
+- `hardware_setup.png` — photo of your breadboard + UNO + HC-SR04 + buzzer  
+- `sensor_placement.png` — diagram showing sensor above glass and the distance markers (3–6 cm = full; 8–12 cm = not full)  
+- `system_block_diagram.png` — logical flow (Sensor → MCU → ML → Buzzer)
 
 ---
 
 # ⚠️ Limitations
 
-### 1️⃣ Sensor accuracy depends on surface condition
-
-Foam, bubbles, or tilted sensor may cause wrong readings.
-
-### 2️⃣ Fixed height calibration
-
-Model works correctly **only** when:
-
-* Sensor is at same height
-* Same distance ranges (3–6 full, 8–12 not full)
-
-Changing the container requires retraining.
-
-### 3️⃣ Requires clean line-of-sight
-
-Ultrasonic sensor fails if objects block the path.
-
-### 4️⃣ Cannot detect water color, type, or movement
-
-Only distance is measured.
-
-### 5️⃣ Buzzer-only alert
-
-No IoT notifications unless added manually.
+- **Surface reflections & ripples:** foam, waves or tilt changes reading accuracy.  
+- **Sensor mounting:** model assumes the sensor is placed at the same height and orientation used during training. If you move the sensor or change container geometry, retrain.  
+- **Dirty/foamy liquids:** ultrasonic returns may be unreliable.  
+- **Small dataset:** model robustness improves with more varied samples (different glasses, water temperatures, noises).  
+- **Buzzer only:** no mobile/IoT notifications are included by default.
 
 ---
 
-# 🔧 How to Run the Project
+# 🌍 Real-World Applications
 
-1. Upload code from `/code/water_overflow_alert_nano33ble.ino`
-2. Add the Edge Impulse ZIP library to Arduino IDE
-3. Power Nano 33 BLE Rev2
-4. Open Serial Monitor
-5. Fill the glass with water
-
-✔ When water reaches 3–6 cm distance → BUZZER ON
-✔ When water is 8–12 cm → BUZZER OFF
+- Household overhead tank overflow detection — stop pumps and alert.  
+- Beverage/production filling line overflow prevention.  
+- Smart kitchen alerts (prevent boiling over).  
+- Educational TinyML demo for embedded classification.  
+- Small-scale industrial container level alerts (non-contact).
 
 ---
 
-# 📸 Images Used
+# 🧪 Testing & Verification Checklist
 
-Place these in `/images/`:
+Before running:
 
-* wiring_nano33ble.png
-* hardware_setup.png
-* sensor_placement.png
-* system_block_diagram.png
-
----
-
-# 📝 License
-
-MIT License (optional)
+- [ ] `/model/edge_impulse_uno_library.zip` is present in `/model/`.  
+- [ ] `code/water_overflow_alert_uno.ino` `#include` matches `.h` inside ZIP.  
+- [ ] UNO board selected in Arduino IDE and sketch compiles.  
+- [ ] Wiring matches `images/wiring_uno.png`.  
+- [ ] Serial Monitor open @ 115200 shows sample frames and classifier scores.  
+- [ ] Buzzer toggles ON when water reaches ~3–6 cm.
 
 ---
 
+# 🔁 GitHub upload order & recommended commit messages
+
+1. Add `README.md` → `docs: add README for Arduino UNO R3`  
+2. Add `.gitignore` → `chore: add .gitignore`  
+3. Add `HW_NOTES.md` → `docs: add HW_NOTES`  
+4. Add `code/water_overflow_alert_uno.ino` → `feat(code): add UNO sketch`  
+5. Add `model/edge_impulse_uno_library.zip` → `chore(model): add EI library (UNO)`  
+6. Add dataset files → `data: add dataset`  
+7. Add images → `docs: add wiring + images`  
+8. (Optional) Add LICENSE → `chore: add license`
 
 ---
+
+# 🛠 Troubleshooting tips
+
+- `run_classifier` fails: ensure EI library ZIP is imported in Arduino IDE and the header include matches exactly.  
+- `pulseIn` returns 0: check TRIG/ECHO wiring and that sensor has line-of-sight to water.  
+- Buzzer not responding: test buzzer with a small toggle sketch or verify transistor wiring if used.  
+- Model performs poorly: collect more samples covering slight tilt, different glasses, and save separate test files.
+
+---
+
+# 📦 Want me to generate files?
+If you want, I can now generate for you immediately:
+
+- `wiring_uno.png` (clean labeled wiring diagram PNG)  
+- `sensor_placement.png` (visual showing 3–6 cm vs 8–12 cm)  
+- `system_block_diagram.png`  
+- A ZIP of the text files for direct upload
+
+Reply with any of: **“Make wiring_uno.png”**, **“Make all images”**, or **“Make repo ZIP”** and I’ll produce them now.
 
